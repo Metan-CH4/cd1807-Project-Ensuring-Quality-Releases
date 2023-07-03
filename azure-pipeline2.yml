@@ -27,8 +27,6 @@ stages:
   jobs:
   - job: BuildInfrastructure
     pool: myAgent
-    agent:
-      name: myLinuxVM
     steps:
     #--------------------------------------------#  
     # Use Terraform to create the Infrastructure      
