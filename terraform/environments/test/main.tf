@@ -62,6 +62,6 @@ module "vm" {
   application_type = "${var.application_type}"
   custom_image_name = "linux-img"
   custom_gallery_name = "testgallery"
-  custom_image_resource_group_name = "${module.resource_group.resource_group_name}"
+  custom_image_resource_group_name = "${var.resource_group_name}"
 
 }
