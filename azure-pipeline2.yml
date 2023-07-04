@@ -24,6 +24,12 @@ stages:
   jobs:
   - job: BuildInfrastructure
     steps:
+    - script: |
+        curl -LO https://releases.hashicorp.com/terraform/1.5.2/terraform_1.5.2_linux_amd64.zip
+        unzip terraform_1.5.2_linux_amd64.zi
+        sudo mv terraform /usr/local/bin/
+      workingDirectory: $(projectRoot)
+      displayName: 'Initial'
     # Install Terraform on the pipeline agent 
     - task: TerraformInstaller@0
       displayName: 'Terrafom installation'
