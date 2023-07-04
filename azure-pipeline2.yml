@@ -25,7 +25,7 @@ stages:
   - job: BuildInfrastructure
     steps:
     # Install Terraform on the pipeline agent 
-    - task: TerraformInstaller@0
+    - task: TerraformInstaller
       displayName: 'Terrafom installation'
       inputs:
         terraformVersion: '1.5.2'
