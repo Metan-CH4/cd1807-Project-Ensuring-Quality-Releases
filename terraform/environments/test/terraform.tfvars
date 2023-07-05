@@ -9,7 +9,7 @@ location = "East US"
 #resource_group_name = "finalProjectSA"
 application_type = "finalApplication"
 resource_group = "finalProjectSA"
-resource_group_name = "finalProjectRG"
+resource_group_name = "finalProject"
 
 # Network
 virtual_network_name = "finalProjectVNet"
