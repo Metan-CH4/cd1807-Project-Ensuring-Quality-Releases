@@ -6,9 +6,10 @@ tenant_id = "04ddec1f-a849-449e-ba4b-2b627d794e93"
 
 # Resource Group/Location
 location = "East US"
-resource_group_name = "finalProjectSA"
+#resource_group_name = "finalProjectSA"
 application_type = "finalApplication"
-resource_group = "finalProjectRG"
+#resource_group = "finalProjectRG"
+resource_group_name = "finalProjectRG"
 
 # Network
 virtual_network_name = "finalProjectVNet"
