@@ -89,10 +89,15 @@ stages:
 #--------------------------------------------#    
     # Postman - Install Newman    
     # ToDo: Update the command and verify the working directory
-    - task: Npm@1
+    # - task: Npm@1
+    #   displayName: 'Install npm'
+    #   inputs:
+    #     command: 'install'
+    #     workingDir: '$(System.DefaultWorkingDirectory)'
+    - task: CmdLine@2
       displayName: 'Install npm'
       inputs:
-        command: 'install'
+        command: 'sudo install npm'
         workingDir: '$(System.DefaultWorkingDirectory)'
     - task: CmdLine@2
       displayName: Install Newman
