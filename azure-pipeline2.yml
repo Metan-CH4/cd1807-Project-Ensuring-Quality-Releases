@@ -97,7 +97,8 @@ stages:
     - task: CmdLine@2
       displayName: 'Install npm'
       inputs:
-        command: 'sudo install npm'
+        # command: 'sudo install npm'
+        script: 'curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs'
         workingDir: '$(System.DefaultWorkingDirectory)'
     - task: CmdLine@2
       displayName: Install Newman
