@@ -25,12 +25,6 @@ stages:
   jobs:
   - job: BuildInfrastructure
     steps:
-    # - script: |
-    #     curl -LO https://releases.hashicorp.com/terraform/1.5.2/terraform_1.5.2_linux_amd64.zip
-    #     unzip terraform_1.5.2_linux_amd64.zi
-    #     sudo mv terraform /usr/local/bin/
-      # workingDirectory: $(projectRoot)
-      # displayName: 'Initial'
     # Install Terraform on the pipeline agent 
     - task: TerraformInstaller@0
       displayName: 'Terrafom installation'
@@ -92,3 +86,38 @@ stages:
     #     command: 'destroy'
     #     workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
     #     environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+#--------------------------------------------#    
+    # Postman - Install Newman    
+    # ToDo: Update the command and verify the working directory
+    - task: CmdLine@2
+      displayName: Install Newman
+      inputs:
+        script: 'sudo npm install -g newman'
+        workingDirectory: $(System.DefaultWorkingDirectory)
+    # Postman Data Validation Test Suite    
+    # ToDo: Verify the working directory
+    - task: CmdLine@2
+      displayName: Verify Working Directory
+      inputs:
+        script: 'pwd'
+        workingDirectory: $(System.DefaultWorkingDirectory)
+    - task: CmdLine@2
+      displayName: Run Data Validation Tests
+      continueOnError: true
+      inputs:
+        script: 'newman run TestSuite.Data-Validation.json -e Test.environment.json --reporters cli,junit --reporter-junit-export TEST-DataValidation.xml'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+    # Postman Regression Test Suite    
+    # ToDo: Verify the working directory
+    - task: CmdLine@2
+      displayName: Verify Working Directory
+      inputs:
+        script: 'pwd'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+
+    - task: CmdLine@2
+      displayName: Run Regression Tests
+      continueOnError: true
+      inputs:
+        script: 'newman run TestSuite.Regression.json -e Test.environment.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
