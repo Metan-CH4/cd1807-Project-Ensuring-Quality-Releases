@@ -14,7 +14,7 @@ variables:
   python.version: '3.9.17'
   # ToDo: Replace the service connection name as used in the DevOps project settings
   azureServiceConnection: 'finalProjectSA'
-  azureServiceConnectionId: 'finalProjectRG'
+  azureServiceConnectionId: 'finalProject'
   # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
   # Environment name
@@ -207,7 +207,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: '$(azureServiceConnection)' #'48e3af3a-cc82-4280-bdda-b22f5690beda'     # ToDo
+              azureSubscription: '$(azureServiceConnectionId)' #'48e3af3a-cc82-4280-bdda-b22f5690beda'     # ToDo
               appName: 'finalApplication-AppService'               # ToDo
               appType: webApp
               # package: $(Pipeline.Workspace)/<artifact>/<archiveFile>       # ToDo: Use the published zip artifact. 
@@ -231,9 +231,9 @@ stages:
   - deployment: VMDeploy
     displayName: Selenium Tests
     environment:
-      name: 'test-vm'        # ToDo: Change/provide a name
+      name: 'test-vm'        #ToDo: Change/provide a name
       resourceType: VirtualMachine
-      tags: selenium
+      # tags: selenium
     strategy:
       runOnce:
         deploy:
