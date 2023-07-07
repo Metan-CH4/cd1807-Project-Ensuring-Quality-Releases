@@ -126,10 +126,19 @@ stages:
       displayName: Verify Working Directory
       inputs:
         script: 'pwd'
-        workingDirectory: $(System.DefaultWorkingDirectory)
+        workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
     - task: CmdLine@2
       displayName: Run Data Validation Tests
       continueOnError: true
       inputs:
         script: 'newman run TestSuite.Data-Validation.json -e DataValidationEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-DataValidation.xml'
         workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+    # Postman - Publish Results 
+    # ToDo: Complete the task as explained here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=trx%2Cyaml#yaml-snippet
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TEST-*.xml' # '**/TEST-*.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'      # ToDo
+        mergeTestResults: true
+        testRunTitle: 'Regression-DataValidation-Test'      # ToDo
