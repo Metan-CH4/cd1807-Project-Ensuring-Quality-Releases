@@ -34,9 +34,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{url2}}",
+					"raw": "{{url2}}/api/v1/users",
 					"host": [
 						"{{url2}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users"
 					]
 				}
 			},
