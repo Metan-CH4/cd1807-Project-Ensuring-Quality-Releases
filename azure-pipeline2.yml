@@ -207,7 +207,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: '48e3af3a-cc82-4280-bdda-b22f5690beda'     # ToDo
+              azureSubscription: '$(azureServiceConnection)' #'48e3af3a-cc82-4280-bdda-b22f5690beda'     # ToDo
               appName: 'finalApplication-AppService'               # ToDo
               appType: webApp
               # package: $(Pipeline.Workspace)/<artifact>/<archiveFile>       # ToDo: Use the published zip artifact. 
