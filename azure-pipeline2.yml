@@ -146,19 +146,19 @@ stages:
 
 
     #--------------------------------------------#
-    # Selenium (UI) Test Suite - Archive the package  
-    # "ArchiveFiles@2" picks up the web package and archives it.
-    - task: ArchiveFiles@2
-      displayName: 'Archive UI Tests'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip'
-    # Selenium Test Suite - Publish the package  
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip   # Same as the archiveFile artifact above. 
-      displayName: 'Upload Package'
-      artifact: drop-uitests
+    # # Selenium (UI) Test Suite - Archive the package  
+    # # "ArchiveFiles@2" picks up the web package and archives it.
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive UI Tests'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+    #     includeRootFolder: false
+    #     archiveType: 'zip'
+    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip'
+    # # Selenium Test Suite - Publish the package  
+    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-uitests.zip   # Same as the archiveFile artifact above. 
+    #   displayName: 'Upload Package'
+    #   artifact: drop-uitests
 
     #--------------------------------------------#    
     # FakeRestAPI - Archive
@@ -166,7 +166,7 @@ stages:
     - task: ArchiveFiles@2
       displayName: 'Archive FakeRestAPI'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
@@ -175,19 +175,19 @@ stages:
       artifact: drop-fakerestapi
 
     #--------------------------------------------#  
-    # JMeter (Performance) Test Suite - Archive
-    # ToDo: Complete the ArchiveFiles@2 task and publish step 
-    - task: ArchiveFiles@2
-      displayName: 'Archive PerformanceTestSuite'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip'
-    # JMeter Test Suite - Publish    
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip
-      displayName: 'Upload Package'
-      artifact: drop-perftests
+    # # JMeter (Performance) Test Suite - Archive
+    # # ToDo: Complete the ArchiveFiles@2 task and publish step 
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive PerformanceTestSuite'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
+    #     includeRootFolder: false
+    #     archiveType: 'zip'
+    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip'
+    # # JMeter Test Suite - Publish    
+    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-perftests.zip
+    #   displayName: 'Upload Package'
+    #   artifact: drop-perftests
 
 #--------------------------------------------#  
 # DEPLOYMENT STAGE
@@ -198,7 +198,7 @@ stages:
   # Deploy FakeRestAPI Web App
   # ToDo: Provide <environment name> you created in your DevOps project
   - deployment: FakeRestAPI
-    # pool: myAgent
+    pool: myAgent
       # vmImage: 'Ubuntu-18.04'      
     environment: 'test-vm' #<environment name>   # ToDo
     strategy:
@@ -213,67 +213,68 @@ stages:
               appType: webApp
               # package: $(Pipeline.Workspace)/<artifact>/<archiveFile>       # ToDo: Use the published zip artifact. 
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip       # ToDo: Use the published zip artifact. 
+              deploymentMethod: auto
           #--------------------------------------------#    
-          # Run JMeter test suite against the App Service
-          - task: CmdLine@2
-            inputs:
-              script: |
-                pwd
-                wget "https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.tgz"
-                tar -xf apache-jmeter-5.6.tgz
-                unzip -o $(Build.BuildId)-perftests.zip
-                ./apache-jmeter-5.6/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
-                cat jmeter.log                                                                           # ToDo: Write your commands
-              # workingDirectory: $(Pipeline.Workspace)/<artifact>            # ToDo: Use the artifact name from the task above
-              workingDirectory: $(Pipeline.Workspace)/drop-perftests/            # ToDo: Use the artifact name from the task above
+  #         # Run JMeter test suite against the App Service
+  #         - task: CmdLine@2
+  #           inputs:
+  #             script: |
+  #               pwd
+  #               wget "https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.tgz"
+  #               tar -xf apache-jmeter-5.6.tgz
+  #               unzip -o $(Build.BuildId)-perftests.zip
+  #               ./apache-jmeter-5.6/bin/jmeter -n -t PerformanceTestSuite.jmx -j jmeter.log -f
+  #               cat jmeter.log                                                                           # ToDo: Write your commands
+  #             # workingDirectory: $(Pipeline.Workspace)/<artifact>            # ToDo: Use the artifact name from the task above
+  #             workingDirectory: $(Pipeline.Workspace)/drop-perftests/            # ToDo: Use the artifact name from the task above
               
-  #--------------------------------------------#  
-  # Selenium | Functional UI Tests
-  # ToDo: 
-  - deployment: VMDeploy
-    displayName: Selenium Tests
-    # pool: myAgent
-      # vmImage: 'Ubuntu-18.04'      
-    environment: 'test-vm' #<environment name>   # ToDo
-    # pool: myAgent
-    # environment:
-    #   name: 'test-vm'        #ToDo: Change/provide a name
-    #   resourceType: VirtualMachine
-      # tags: selenium
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: drop-ui-tests     # ToDo: Change/provide a name
+  # #--------------------------------------------#  
+  # # Selenium | Functional UI Tests
+  # # ToDo: 
+  # - deployment: VMDeploy
+  #   displayName: Selenium Tests
+  #   # pool: myAgent
+  #     # vmImage: 'Ubuntu-18.04'      
+  #   environment: 'test-vm' #<environment name>   # ToDo
+  #   # pool: myAgent
+  #   # environment:
+  #   #   name: 'test-vm'        #ToDo: Change/provide a name
+  #   #   resourceType: VirtualMachine
+  #     # tags: selenium
+  #   strategy:
+  #     runOnce:
+  #       deploy:
+  #         steps:
+  #         - download: current
+  #           artifact: drop-ui-tests     # ToDo: Change/provide a name
             
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: |           
-                #! /bin/bash
+  #         - task: Bash@3
+  #           inputs:
+  #             targetType: 'inline'
+  #             script: |           
+  #               #! /bin/bash
                 
-                sudo apt-get upgrade -y
-                sudo apt-get install python3-pip -y
-                sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                pip3 install selenium
-                cd ~/
-                DIR=/home/devopsagent/app
-                if [ ! -d "$DIR" ]; then
-                    mkdir app
-                fi
-                mv /home/devopsagent/myagent/_work/1/drop-uitests/$(Build.BuildId)-uitests.zip app
-                cd app
-                unzip -o $(Build.BuildId)-uitests.zip
-                FILE=/home/devopsagent/app/chromedriver_linux64.zip
-                if [ ! -f "$FILE" ]; then
-                    LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-                    wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
-                    unzip -o chromedriver_linux64.zip
-                    sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
-                fi
-                export PATH=$PATH:/home/devopsagent/app
-                echo "Starting Selenium Tests"
-                python3 add_remove_from_cart.py >> selenium.log
-                echo "Completed Selenium Tests. Check selenium.log for results."
+  #               sudo apt-get upgrade -y
+  #               sudo apt-get install python3-pip -y
+  #               sudo apt-get install unzip -y
+  #               sudo apt-get install -y chromium-browser
+  #               pip3 install selenium
+  #               cd ~/
+  #               DIR=/home/devopsagent/app
+  #               if [ ! -d "$DIR" ]; then
+  #                   mkdir app
+  #               fi
+  #               mv /home/devopsagent/myagent/_work/1/drop-uitests/$(Build.BuildId)-uitests.zip app
+  #               cd app
+  #               unzip -o $(Build.BuildId)-uitests.zip
+  #               FILE=/home/devopsagent/app/chromedriver_linux64.zip
+  #               if [ ! -f "$FILE" ]; then
+  #                   LATEST=$(wget -q -O - http://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+  #                   wget http://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip
+  #                   unzip -o chromedriver_linux64.zip
+  #                   sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
+  #               fi
+  #               export PATH=$PATH:/home/devopsagent/app
+  #               echo "Starting Selenium Tests"
+  #               python3 add_remove_from_cart.py >> selenium.log
+  #               echo "Completed Selenium Tests. Check selenium.log for results."
