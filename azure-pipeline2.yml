@@ -192,28 +192,28 @@ stages:
 #--------------------------------------------#  
 # DEPLOYMENT STAGE
 #--------------------------------------------#    
-# - stage: Deploy
-#   jobs:
-#   #--------------------------------------------#  
-#   # Deploy FakeRestAPI Web App
-#   # ToDo: Provide <environment name> you created in your DevOps project
-#   - deployment: FakeRestAPI
-#     pool: myAgent
-#       # vmImage: 'Ubuntu-18.04'      
-#     environment: 'test-vm' #<environment name>   # ToDo
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - task: AzureWebApp@1
-#             displayName: 'Deploy Azure Web App'
-#             inputs:
-#               azureSubscription: '$(azureServiceConnectionId)' #'48e3af3a-cc82-4280-bdda-b22f5690beda'     # ToDo
-#               appName: 'finalApplication-AppService'               # ToDo
-#               appType: webApp
-#               # package: $(Pipeline.Workspace)/<artifact>/<archiveFile>       # ToDo: Use the published zip artifact. 
-#               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip       # ToDo: Use the published zip artifact. 
-#               deploymentMethod: auto
+- stage: Deploy
+  jobs:
+  #--------------------------------------------#  
+  # Deploy FakeRestAPI Web App
+  # ToDo: Provide <environment name> you created in your DevOps project
+  - deployment: FakeRestAPI
+    pool: #myAgent
+      vmImage: 'Ubuntu-18.04'      
+    environment: 'test-vm' #<environment name>   # ToDo
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App'
+            inputs:
+              azureSubscription: 'azureServiceConnectionId' #'48e3af3a-cc82-4280-bdda-b22f5690beda'     # ToDo
+              appName: 'finalApplication-AppService'               # ToDo
+              appType: webApp
+              # package: $(Pipeline.Workspace)/<artifact>/<archiveFile>       # ToDo: Use the published zip artifact. 
+              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip       # ToDo: Use the published zip artifact. 
+              deploymentMethod: auto
           #--------------------------------------------#    
   #         # Run JMeter test suite against the App Service
   #         - task: CmdLine@2
