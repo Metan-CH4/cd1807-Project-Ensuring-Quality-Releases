@@ -1,4 +1,5 @@
 name: Azure Pipelines
+
 trigger:
 - main
 
@@ -7,10 +8,7 @@ pool: myAgent
 variables:
   python.version: '3.9.17'
   azureServiceConnectionId: 'finalProject222'
-  # azureServiceConnectionId: '38800d58-310e-43a5-936f-d8024b4b1f37'
-  # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
-  # Environment name
   environmentName: 'test-vm'
 
 stages:
@@ -18,9 +16,6 @@ stages:
   jobs:
   - job: BuildInfrastructure
     steps:
-    #--------------------------------------------#    
-    # FakeRestAPI - Archive
-    # ToDo: Complete the ArchiveFiles@2 task and publish step 
     - task: ArchiveFiles@2
       displayName: 'Archive FakeRestAPI'
       inputs:
@@ -32,28 +27,32 @@ stages:
       displayName: 'Upload Package'
       artifact: drop-fakerestapi
 
-#--------------------------------------------#  
-# DEPLOYMENT STAGE
-#--------------------------------------------#    
 - stage: Deploy
   jobs:
-  #--------------------------------------------#  
-  # Deploy FakeRestAPI Web App
-  # ToDo: Provide <environment name> you created in your DevOps project
   - deployment: FakeRestAPI
     pool: myAgent
-      # vmImage: 'Ubuntu-18.04'      
-    environment: 'test-vm' #<environment name>   # ToDo
+    environment: 'test-vm'
     strategy:
       runOnce:
         deploy:
           steps:
-          - task: AzureWebApp@1
+          - task: AzureAppServiceSettings@1
+            displayName: 'Update App Service Application Settings'
+            inputs:
+              azureSubscription: '$(azureServiceConnectionId)'
+              appName: 'finalApplication-AppService'
+              appSettings: |
+                [
+                  {
+                    "name": "WEBSITE_RUN_FROM_PACKAGE",
+                    "value": "0"
+                  }
+                  // Add other application settings if needed
+                ]
+          - task: AzureRmWebAppDeployment@4
             displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: '$(azureServiceConnectionId)' #'48e3af3a-cc82-4280-bdda-b22f5690beda'     # ToDo
-              appName: 'finalApplication-AppService'               # ToDo
+              azureSubscription: '$(azureServiceConnectionId)'
               appType: webApp
-              # package: $(Pipeline.Workspace)/<artifact>/<archiveFile>       # ToDo: Use the published zip artifact. 
-              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip       # ToDo: Use the published zip artifact. 
-  
+              appName: 'finalApplication-AppService'
+              package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'
