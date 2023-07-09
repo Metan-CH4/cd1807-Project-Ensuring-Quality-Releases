@@ -48,6 +48,7 @@ stages:
                     "value": "0"
                   }
                 ]
+            env: {}
           - task: AzureRmWebAppDeployment@4
             displayName: 'Deploy Azure Web App'
             inputs:
@@ -55,3 +56,4 @@ stages:
               appType: webApp
               WebAppName: 'finalApplication-AppService' #update this
               package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'
+
