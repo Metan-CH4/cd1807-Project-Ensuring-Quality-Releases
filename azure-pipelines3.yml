@@ -47,7 +47,6 @@ stages:
                     "name": "WEBSITE_RUN_FROM_PACKAGE",
                     "value": "0"
                   }
-                  // Add other application settings if needed
                 ]
           - task: AzureRmWebAppDeployment@4
             displayName: 'Deploy Azure Web App'
