@@ -178,7 +178,7 @@
       </Arguments>
       <hashTree/>
       <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Book IDs CSV">
-        <stringProp name="filename">E:/Cert/NanoDegree/project 3/book_IDs.csv</stringProp>
+        <stringProp name="filename">/home/devopsagent/myagent/_work/4/s/automatedtesting/jmeter/book_IDs.csv</stringProp>
         <stringProp name="fileEncoding"></stringProp>
         <stringProp name="variableNames">id</stringProp>
         <boolProp name="ignoreFirstLine">false</boolProp>
@@ -190,7 +190,7 @@
       </CSVDataSet>
       <hashTree/>
       <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Book Samples CSV">
-        <stringProp name="filename">E:/Cert/NanoDegree/project 3/books_sample.csv</stringProp>
+        <stringProp name="filename">/home/devopsagent/myagent/_work/4/s/automatedtesting/jmeter/books_sample.csv</stringProp>
         <stringProp name="fileEncoding"></stringProp>
         <stringProp name="variableNames">ID,Title,Description,PageCount,Excerpt,PublishDate</stringProp>
         <boolProp name="ignoreFirstLine">true</boolProp>
@@ -235,7 +235,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">E:\Cert\NanoDegree\project 3\endurance-test-result.csv</stringProp>
+        <stringProp name="filename">./endurance-test-result.csv</stringProp>
       </ResultCollector>
       <hashTree/>
     </hashTree>

@@ -140,13 +140,13 @@ stages:
             mkdir -p log/jmeter
             pwd
             ls -la
-            ls '/home/vsts/work/1/s'
+            ls '/home/devopsagent/myagent/_work/4/s'
           displayName: Install JMeter
         - bash: |
             apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
             cat log/jmeter/jmeter-stress-test.log
-            ls '/home/vsts/work/1/s'
-            ls '/home/vsts/work/1/s/automatedtesting/jmeter'
+            ls '/home/devopsagent/myagent/_work/4/s'
+            ls '/home/devopsagent/myagent/_work/4/s/automatedtesting/jmeter'
           displayName: JMeter stress test
         - bash: |
             apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
