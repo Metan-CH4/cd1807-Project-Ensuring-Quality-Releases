@@ -125,53 +125,53 @@ stages:
 
 - stage: Test
   jobs:
-    - job: JMeter
-      displayName: Performance testing
-      pool: myAgent
-      steps:
-        - bash: |
-            sudo apt-get install openjdk-17-jre-headless -y
-            java -version
-            wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.tgz
-            tar xzvf apache-jmeter-5.6.tgz
-            echo "jmeter version : " 
-            apache-jmeter-5.6/bin/jmeter --version   
-            mkdir -p log/jmeter
-            pwd
-            ls -la
-            ls '/home/devopsagent/myagent/_work/4/s'
-          displayName: Install JMeter
-        - bash: |
-            apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
-            cat log/jmeter/jmeter-stress-test.log
-            ls '/home/devopsagent/myagent/_work/4/s'
-            ls '/home/devopsagent/myagent/_work/4/s/automatedtesting/jmeter'
-          displayName: JMeter stress test
-        - bash: |
-            apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
-            cat log/jmeter/jmeter-endurance-test.log
-          displayName: JMeter endurance test
-        - task: ArchiveFiles@2
-          displayName: Publish Stress Test Results
-          inputs:
-            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
-            includeRootFolder: false
-            archiveType: zip
-            archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report.zip'
-            verbose: true
-        - task: ArchiveFiles@2
-          displayName: Publish Endurance Test Results
-          inputs:
-            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
-            includeRootFolder: false
-            archiveType: zip
-            archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report.zip'
-            verbose: true
-        - task: PublishPipelineArtifact@1
-          displayName: Publish JMeter logs
-          inputs:
-            targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
-            artifact: drop-jmeter   
+    # - job: JMeter
+    #   displayName: Performance testing
+    #   pool: myAgent
+    #   steps:
+    #     - bash: |
+    #         sudo apt-get install openjdk-17-jre-headless -y
+    #         java -version
+    #         wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.tgz
+    #         tar xzvf apache-jmeter-5.6.tgz
+    #         echo "jmeter version : " 
+    #         apache-jmeter-5.6/bin/jmeter --version   
+    #         mkdir -p log/jmeter
+    #         pwd
+    #         ls -la
+    #         ls '/home/devopsagent/myagent/_work/4/s'
+    #       displayName: Install JMeter
+    #     - bash: |
+    #         apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
+    #         cat log/jmeter/jmeter-stress-test.log
+    #         ls '/home/devopsagent/myagent/_work/4/s'
+    #         ls '/home/devopsagent/myagent/_work/4/s/automatedtesting/jmeter'
+    #       displayName: JMeter stress test
+    #     - bash: |
+    #         apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
+    #         cat log/jmeter/jmeter-endurance-test.log
+    #       displayName: JMeter endurance test
+    #     - task: ArchiveFiles@2
+    #       displayName: Publish Stress Test Results
+    #       inputs:
+    #         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
+    #         includeRootFolder: false
+    #         archiveType: zip
+    #         archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report.zip'
+    #         verbose: true
+    #     - task: ArchiveFiles@2
+    #       displayName: Publish Endurance Test Results
+    #       inputs:
+    #         rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
+    #         includeRootFolder: false
+    #         archiveType: zip
+    #         archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report.zip'
+    #         verbose: true
+    #     - task: PublishPipelineArtifact@1
+    #       displayName: Publish JMeter logs
+    #       inputs:
+    #         targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
+    #         artifact: drop-jmeter   
 #--------------------------------------------#    
     - job: Postman
       displayName: Performance testing
