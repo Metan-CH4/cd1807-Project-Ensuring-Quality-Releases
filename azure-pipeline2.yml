@@ -162,8 +162,8 @@ stages:
 # TEST STAGE
 #--------------------------------------------#    
 
-# - stage: Test
-#   jobs:
+- stage: Test
+  jobs:
 #     - job: JMeter
 #       displayName: Performance testing
 #       pool: myAgent
