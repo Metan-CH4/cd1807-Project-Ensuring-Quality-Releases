@@ -125,7 +125,7 @@ stages:
 
 - stage: Test
   jobs:
-    - job: Test_Jmeter
+    - job: JMeter
       displayName: Performance testing
       pool: myAgent
       steps:
@@ -172,6 +172,52 @@ stages:
           inputs:
             targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
             artifact: drop-jmeter   
+#--------------------------------------------#    
+    - job: Postman
+      displayName: Performance testing
+      pool: myAgent
+      steps:
+        # Postman - Install Newman    
+        - task: CmdLine@2
+          displayName: 'Install npm'
+          inputs:
+            script: 'curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs'
+            workingDir: '$(System.DefaultWorkingDirectory)'
+        - task: CmdLine@2
+          displayName: Install Newman
+          inputs:
+            script: 'sudo npm install -g newman'
+            workingDirectory: $(System.DefaultWorkingDirectory)
+        - task: CmdLine@2
+          displayName: Run Regression Tests
+          continueOnError: true
+          inputs:
+            script: 'newman run TestSuite.Regression.json -e RegressionEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
+            # script: 'newman run TestSuite.Regression.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        # Postman Data Validation Test Suite    
+        # ToDo: Verify the working directory
+        - task: CmdLine@2
+          displayName: Verify Working Directory
+          inputs:
+            script: 'pwd'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        - task: CmdLine@2
+          displayName: Run Data Validation Tests
+          continueOnError: true
+          inputs:
+            script: 'newman run TestSuite.Data-Validation.json -e DataValidationEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-DataValidation.xml'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        # Postman - Publish Results 
+        # ToDo: Complete the task as explained here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=trx%2Cyaml#yaml-snippet
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/TEST-*.xml' # '**/TEST-*.xml'
+            searchFolder: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'      # ToDo
+            mergeTestResults: true
+            testRunTitle: 'Regression-DataValidation-Test'      # ToDo
+
 
   #--------------------------------------------#    
   #         # Run JMeter test suite against the App Service
@@ -275,44 +321,3 @@ stages:
     #   inputs:
     #     script: 'pwd'
     #     workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-#--------------------------------------------#    
-    # # Postman - Install Newman    
-    # - task: CmdLine@2
-    #   displayName: 'Install npm'
-    #   inputs:
-    #     script: 'curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs'
-    #     workingDir: '$(System.DefaultWorkingDirectory)'
-    # - task: CmdLine@2
-    #   displayName: Install Newman
-    #   inputs:
-    #     script: 'sudo npm install -g newman'
-    #     workingDirectory: $(System.DefaultWorkingDirectory)
-    # - task: CmdLine@2
-    #   displayName: Run Regression Tests
-    #   continueOnError: true
-    #   inputs:
-    #     script: 'newman run TestSuite.Regression.json -e RegressionEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
-    #     # script: 'newman run TestSuite.Regression.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-    # # Postman Data Validation Test Suite    
-    # # ToDo: Verify the working directory
-    # - task: CmdLine@2
-    #   displayName: Verify Working Directory
-    #   inputs:
-    #     script: 'pwd'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-    # - task: CmdLine@2
-    #   displayName: Run Data Validation Tests
-    #   continueOnError: true
-    #   inputs:
-    #     script: 'newman run TestSuite.Data-Validation.json -e DataValidationEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-DataValidation.xml'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-    # # Postman - Publish Results 
-    # # ToDo: Complete the task as explained here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=trx%2Cyaml#yaml-snippet
-    # - task: PublishTestResults@2
-    #   inputs:
-    #     testResultsFormat: 'JUnit'
-    #     testResultsFiles: '**/TEST-*.xml' # '**/TEST-*.xml'
-    #     searchFolder: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'      # ToDo
-    #     mergeTestResults: true
-    #     testRunTitle: 'Regression-DataValidation-Test'      # ToDo
