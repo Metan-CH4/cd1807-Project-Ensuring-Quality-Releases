@@ -7,15 +7,22 @@
 	},
 	"item": [
 		{
-			"name": "Create User",
+			"name": "Add New Book",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Create new user complete!\", function () {\r",
-							"    pm.expect(pm.response.text()).to.include(\"User registered successfully!\");\r",
-							"});"
+							"pm.test(\"Create new book complete!\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(pm.response.text()).to.contain(\"ID\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"Title\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"Description\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"PageCount\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"Excerpt\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"PublishDate\");\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -26,7 +33,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"first_name\": \"{{first_name}}\",\r\n    \"last_name\": \"{{last_name}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"mobile_no\": \"{{mobile_no}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"raw": "{\r\n    \"id\": {{ID}},\r\n    \"title\": \"{{title}}\",\r\n    \"description\": \"{{description}}\",\r\n    \"pageCount\": {{pageCount}},\r\n    \"excerpt\": \"{{excerpt}}\",\r\n    \"publishDate\": \"{{publishDate}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -34,28 +41,32 @@
 					}
 				},
 				"url": {
-					"raw": "{{url2}}/api/v1/users",
+					"raw": "{{url}}/api/Books",
 					"host": [
-						"{{url2}}"
+						"{{url}}"
 					],
 					"path": [
 						"api",
-						"v1",
-						"users"
+						"Books"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "GET All Users",
+			"name": "GET All Books",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Get users successfully!\", function () {\r",
-							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"pm.test(\"Get Books successfully!\", function () {\r",
+							"    pm.expect(pm.response.text()).to.contain(\"ID\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"Title\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"Description\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"PageCount\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"Excerpt\");\r",
+							"    pm.expect(pm.response.text()).to.contain(\"PublishDate\");\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -66,14 +77,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url2}}/api/v1/users",
+					"raw": "{{url}}/api/Books",
 					"host": [
-						"{{url2}}"
+						"{{url}}"
 					],
 					"path": [
 						"api",
-						"v1",
-						"users"
+						"Books"
 					]
 				}
 			},
