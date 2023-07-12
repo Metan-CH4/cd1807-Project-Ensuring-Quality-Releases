@@ -107,9 +107,9 @@ stages:
     #   displayName: 'Upload Package'
     #   artifact: drop-selenium
 
---------------------------------------------#  
-DEPLOYMENT STAGE
---------------------------------------------#    
+#--------------------------------------------#  
+#DEPLOYMENT STAGE
+#--------------------------------------------#    
 - stage: Deploy
   jobs:
   # Deploy FakeRestAPI Web App
