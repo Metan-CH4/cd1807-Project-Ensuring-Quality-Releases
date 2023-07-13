@@ -62,19 +62,19 @@ stages:
   jobs:
   - job: ArchivePackage
     steps:
-    #--------------------------------------------#    
-    # FakeRestAPI - Archive
-    - task: ArchiveFiles@2
-      displayName: 'Archive FakeRestAPI'
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-        replaceExistingArchive: true
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-      displayName: 'Upload Package'
-      artifact: drop-fakerestapi
+    # #--------------------------------------------#    
+    # # FakeRestAPI - Archive
+    # - task: ArchiveFiles@2
+    #   displayName: 'Archive FakeRestAPI'
+    #   inputs:
+    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
+    #     includeRootFolder: false
+    #     archiveType: 'zip'
+    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+    #     replaceExistingArchive: true
+    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+    #   displayName: 'Upload Package'
+    #   artifact: drop-fakerestapi
 
     #--------------------------------------------#  
     # # JMeter (Performance) Test Suite - Archive
@@ -113,20 +113,20 @@ stages:
 - stage: Deploy
   jobs:
   # Deploy FakeRestAPI Web App
-  - deployment: FakeRestAPI
-    environment: 'test-vm' 
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App'
-            inputs:
-              azureSubscription: '$(azureServiceConnectionId)' 
-              appName: 'finalApplication-AppService'           
-              appType: webApp
-              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip    
-              deploymentMethod: auto
+  # - deployment: FakeRestAPI
+  #   environment: 'test-vm' 
+  #   strategy:
+  #     runOnce:
+  #       deploy:
+  #         steps:
+  #         - task: AzureWebApp@1
+  #           displayName: 'Deploy Azure Web App'
+  #           inputs:
+  #             azureSubscription: '$(azureServiceConnectionId)' 
+  #             appName: 'finalApplication-AppService'           
+  #             appType: webApp
+  #             package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip    
+  #             deploymentMethod: auto
   - deployment: VMDeploy
     displayName: VMDeploy
     environment:
