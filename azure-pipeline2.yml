@@ -266,8 +266,8 @@ stages:
                   targetType: inline
                   script: |
                   #!/bin/bash
-                  chromium-browser --version
-                  chromedriver --version
+                  # chromium-browser -version
+                  # chromedriver --version
                   cd $(Pipeline.Workspace)/drop-selenium
                   unzip -o $(Build.BuildId)-selenium.zip
                   sudo mkdir -p /var/log/selenium
