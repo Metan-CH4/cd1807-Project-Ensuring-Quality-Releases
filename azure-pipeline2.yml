@@ -112,7 +112,7 @@ stages:
 #--------------------------------------------#    
 - stage: Deploy
   jobs:
-  Deploy FakeRestAPI Web App
+  # Deploy FakeRestAPI Web App
   - deployment: FakeRestAPI
     environment: 'test-vm' 
     strategy:
