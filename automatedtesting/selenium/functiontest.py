@@ -9,8 +9,8 @@ url = 'https://www.saucedemo.com/'
 # Start the browser and login with standard_user
 def login(user, password):
     print('Starting the browser...' + url)
-    # options = ChromeOptions()
-    # options.add_argument("--headless")
+    options = ChromeOptions()
+    options.add_argument("--headless")
     driver = webdriver.Chrome()
     print('Browser started successfully. Navigating to the demo page to login.')
     driver.get(url)
