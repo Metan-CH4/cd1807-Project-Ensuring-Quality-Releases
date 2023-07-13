@@ -146,8 +146,26 @@ stages:
                 sudo apt-get update -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
-                sudo apt-get install -y chromium-browser
-                sudo apt-get install -y chromium-driver
+                # sudo apt-get install -y chromium-browser
+                # sudo apt-get install -y chromium-driver
+                # Install the latest version of Chrome
+                sudo apt-get install -y curl unzip
+                curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+                echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+                sudo apt-get update -y
+                sudo apt-get install -y google-chrome-stable
+
+                # Install the latest version of ChromeDriver
+                CHROME_VERSION=$(google-chrome-stable --version | awk '{print $NF}' | cut -d '.' -f 1)
+                CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
+                wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip -O chromedriver.zip
+                unzip chromedriver.zip
+                sudo mv chromedriver /usr/local/bin/chromedriver
+                sudo chmod +x /usr/local/bin/chromedriver
+
+                # Verify the installation
+                google-chrome-stable --version
+                chromedriver --version
                 sudo -H pip3 install --upgrade pip
                 pip install -U selenium
                 echo "python version:"
