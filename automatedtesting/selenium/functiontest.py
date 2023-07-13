@@ -3,16 +3,22 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+import datetime
 url = 'https://www.saucedemo.com/'
+
+def timestamp():
+    ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return (ts + '\t')
 
 # Start the browser and login with standard_user
 def login(user, password):
-    print('Starting the browser...' + url)
+    print(timestamp() + 'Starting the browser...' + url)
     options = ChromeOptions()
-    options.add_argument("--headless")
-    driver = webdriver.Chrome()
-    print('Browser started successfully. Navigating to the demo page to login.')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless') 
+    driver = webdriver.Chrome(options=options)
+    # driver = webdriver.Chrome()
+    print(timestamp() + 'Browser started successfully. Navigating to the demo page to login.')
     driver.get(url)
     
     username_input = WebDriverWait(driver, 10).until(
@@ -30,7 +36,7 @@ def login(user, password):
     )
     login_button.click()
     
-    print(f'User: {user}')
+    print(timestamp() + f'User: {user}')
     return driver
 
 
