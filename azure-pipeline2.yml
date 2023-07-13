@@ -141,8 +141,11 @@ stages:
               targetType: 'inline'
               script: |
                 #! /bin/bash
-                sudo apt-get install -y xdg-utils
+                wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w 3a0a070f-aa82-4fcc-96c8-a410be78ce6d -s Dz13VnuFrrqqBbjUydKtj1Gi69m7ul9JTW4cc9n0GB2qX+z4SQESQq5S47onuvHRsM8W4Paw92ipBlgYyWHWQA== -d opinsights.azure.com
+                sudo apt autoremove
                 sudo apt-get upgrade -y
+                sudo apt-get update -y
+                sudo apt-get install -y xdg-utils
                 sudo apt-get remove google-chrome-stable
                 sudo rm /usr/bin/chromedriver
                 sudo rm /usr/local/bin/chromedriver
@@ -174,9 +177,9 @@ stages:
                 python3 --version 
                 export PATH=$PATH:/usr/bin/chromedriver
                 # agent log analytics
-            env:  
-              AZURE_LOG_ANALYTICS_ID: "3a0a070f-aa82-4fcc-96c8-a410be78ce6d" #$(AZURE_LOG_ANALYTICS_ID)
-              AZURE_LOG_ANALYTICS_PRIMARY_KEY: "Dbx1jnYItRFLOcLmwIWNp3VA1OLydSFUVULzztnZasqvmMtbfolLQhyesB0/cqpCK8H/ErdjRwfVgaDtE2agbA==" #$(AZURE_LOG_ANALYTICS_PRIMARY_KEY)
+            # env:  
+            #   AZURE_LOG_ANALYTICS_ID: "3a0a070f-aa82-4fcc-96c8-a410be78ce6d" #$(AZURE_LOG_ANALYTICS_ID)
+            #   AZURE_LOG_ANALYTICS_PRIMARY_KEY: "Dbx1jnYItRFLOcLmwIWNp3VA1OLydSFUVULzztnZasqvmMtbfolLQhyesB0/cqpCK8H/ErdjRwfVgaDtE2agbA==" #$(AZURE_LOG_ANALYTICS_PRIMARY_KEY)
             displayName: Configure VM   
 
 #--------------------------------------------#  
