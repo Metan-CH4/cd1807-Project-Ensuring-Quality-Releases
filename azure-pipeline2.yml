@@ -162,6 +162,7 @@ stages:
                 unzip chromedriver.zip
                 sudo mv chromedriver /usr/local/bin/chromedriver
                 sudo chmod +x /usr/local/bin/chromedriver
+                export PATH=$PATH:/usr/local/bin/chromedriver
 
                 # Verify the installation
                 google-chrome-stable --version
