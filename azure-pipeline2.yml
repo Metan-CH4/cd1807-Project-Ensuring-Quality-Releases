@@ -16,44 +16,44 @@ stages:
 #--------------------------------------------#  
 # BUILD STAGE
 #--------------------------------------------#    
-# - stage: Build
-#   jobs:
-#   - job: BuildInfrastructure
-#     steps:
-#     # Install Terraform on the pipeline agent 
-#     - task: TerraformInstaller@0
-#       displayName: 'Terrafom installation'
-#       inputs:
-#         terraformVersion: '1.5.2'
+- stage: Build
+  jobs:
+  - job: BuildInfrastructure
+    steps:
+    # Install Terraform on the pipeline agent 
+    - task: TerraformInstaller@0
+      displayName: 'Terrafom installation'
+      inputs:
+        terraformVersion: '1.5.2'
 
-#     # Run Terraform Init on the pipeline agent 
-#     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
-#       displayName: 'Terrafom init'
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'init'
-#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-#         backendServiceArm: '$(azureServiceConnectionId)'
-#         backendAzureRmResourceGroupName: 'finalProjectSA'
-#         backendAzureRmStorageAccountName: 'tfstate268179373'
-#         backendAzureRmContainerName: 'tfstate'
-#         backendAzureRmKey: 'test.terraform.tfstate'
+    # Run Terraform Init on the pipeline agent 
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
+      displayName: 'Terrafom init'
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+        backendServiceArm: '$(azureServiceConnectionId)'
+        backendAzureRmResourceGroupName: 'finalProjectSA'
+        backendAzureRmStorageAccountName: 'tfstate268179373'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'test.terraform.tfstate'
 
-#     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
-#       displayName: Terraform validate
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'validate'
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
+      displayName: Terraform validate
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
 
     
-#     # Run Terraform Apply
-#     - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
-#       displayName: Terraform apply
-#       inputs:
-#         provider: 'azurerm'
-#         command: 'apply'
-#         workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
-#         environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
+    # Run Terraform Apply
+    - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV3@3
+      displayName: Terraform apply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/test'
+        environmentServiceNameAzureRM: '$(azureServiceConnectionId)'
 
 #--------------------------------------------#  
 # ARCHIVE STAGE
@@ -62,19 +62,19 @@ stages:
   jobs:
   - job: ArchivePackage
     steps:
-    # #--------------------------------------------#    
-    # # FakeRestAPI - Archive
-    # - task: ArchiveFiles@2
-    #   displayName: 'Archive FakeRestAPI'
-    #   inputs:
-    #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
-    #     includeRootFolder: false
-    #     archiveType: 'zip'
-    #     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
-    #     replaceExistingArchive: true
-    # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
-    #   displayName: 'Upload Package'
-    #   artifact: drop-fakerestapi
+    #--------------------------------------------#    
+    # FakeRestAPI - Archive
+    - task: ArchiveFiles@2
+      displayName: 'Archive FakeRestAPI'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
+        replaceExistingArchive: true
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
+      displayName: 'Upload Package'
+      artifact: drop-fakerestapi
 
     #--------------------------------------------#  
     # # JMeter (Performance) Test Suite - Archive
@@ -112,21 +112,21 @@ stages:
 #--------------------------------------------#    
 - stage: Deploy
   jobs:
-  # Deploy FakeRestAPI Web App
-  # - deployment: FakeRestAPI
-  #   environment: 'test-vm' 
-  #   strategy:
-  #     runOnce:
-  #       deploy:
-  #         steps:
-  #         - task: AzureWebApp@1
-  #           displayName: 'Deploy Azure Web App'
-  #           inputs:
-  #             azureSubscription: '$(azureServiceConnectionId)' 
-  #             appName: 'finalApplication-AppService'           
-  #             appType: webApp
-  #             package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip    
-  #             deploymentMethod: auto
+  Deploy FakeRestAPI Web App
+  - deployment: FakeRestAPI
+    environment: 'test-vm' 
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App'
+            inputs:
+              azureSubscription: '$(azureServiceConnectionId)' 
+              appName: 'finalApplication-AppService'           
+              appType: webApp
+              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip    
+              deploymentMethod: auto
   - deployment: VMDeploy
     displayName: VMDeploy
     environment:
@@ -153,45 +153,7 @@ stages:
                 echo "python version:"
                 python3 --version 
                 export PATH=$PATH:/usr/bin/chromedriver                
-                # wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w 3a0a070f-aa82-4fcc-96c8-a410be78ce6d -s Dz13VnuFrrqqBbjUydKtj1Gi69m7ul9JTW4cc9n0GB2qX+z4SQESQq5S47onuvHRsM8W4Paw92ipBlgYyWHWQA== -d opinsights.azure.com
-                # sudo apt autoremove
-                # sudo apt-get upgrade -y
-                # sudo apt-get update -y
-                # sudo apt-get install -y xdg-utils
-                # sudo apt-get remove google-chrome-stable
-                # sudo rm /usr/bin/chromedriver
-                # sudo rm /usr/local/bin/chromedriver
-                # sudo apt-get update -y
-                # sudo apt-get install python3-pip -y
-                # sudo apt-get install unzip -y
-                # # sudo apt-get install -y chromium-browser
-                # # sudo apt-get install -y chromium-driver
-                # # Install the latest version of Chrome
-                # curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-                # echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-                # sudo apt-get install -y google-chrome-stable
-
-                # # Install the latest version of ChromeDriver
-                # CHROME_VERSION=$(google-chrome-stable --version | awk '{print $NF}' | cut -d '.' -f 1)
-                # CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
-                # wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip -O chromedriver.zip
-                # unzip chromedriver.zip
-                # sudo mv chromedriver /usr/local/bin/chromedriver
-                # sudo chmod +x /usr/local/bin/chromedriver
-                # export PATH=$PATH:/usr/local/bin/chromedriver
-                # sudo apt autoremove
-                # # Verify the installation
-                # google-chrome-stable --version
-                # chromedriver --version
-                # sudo -H pip3 install --upgrade pip
-                # pip install -U selenium
-                # echo "python version:"
-                # python3 --version 
-                # export PATH=$PATH:/usr/bin/chromedriver
-                # agent log analytics
-            # env:  
-            #   AZURE_LOG_ANALYTICS_ID: "3a0a070f-aa82-4fcc-96c8-a410be78ce6d" #$(AZURE_LOG_ANALYTICS_ID)
-            #   AZURE_LOG_ANALYTICS_PRIMARY_KEY: "Dbx1jnYItRFLOcLmwIWNp3VA1OLydSFUVULzztnZasqvmMtbfolLQhyesB0/cqpCK8H/ErdjRwfVgaDtE2agbA==" #$(AZURE_LOG_ANALYTICS_PRIMARY_KEY)
+                
             displayName: Configure VM   
 
 #--------------------------------------------#  
@@ -200,95 +162,95 @@ stages:
 
 - stage: Test
   jobs:
-#     - job: JMeter
-#       displayName: Performance testing
-#       pool: myAgent
-#       steps:
-#         - bash: |
-#             sudo apt-get install openjdk-17-jre-headless -y
-#             java -version
-#             wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.tgz
-#             tar xzvf apache-jmeter-5.6.tgz
-#             echo "jmeter version : " 
-#             apache-jmeter-5.6/bin/jmeter --version   
-#             mkdir -p log/jmeter
-#             pwd
-#           displayName: Install JMeter
-#         - bash: |
-#             apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
-#             cat log/jmeter/jmeter-stress-test.log
-#           displayName: Run Stress Test
-#         - bash: |
-#             apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
-#             cat log/jmeter/jmeter-endurance-test.log
-#           displayName: Endurance test
-#         - task: ArchiveFiles@2
-#           displayName: Publish Stress Test Results
-#           inputs:
-#             rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
-#             includeRootFolder: false
-#             archiveType: zip
-#             archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report.zip'
-#             verbose: true
-#         - task: ArchiveFiles@2
-#           displayName: Publish Endurance Test Results
-#           inputs:
-#             rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
-#             includeRootFolder: false
-#             archiveType: zip
-#             archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report.zip'
-#             verbose: true
-#         - task: PublishPipelineArtifact@1
-#           displayName: Publish JMeter logs
-#           inputs:
-#             targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
-#             artifact: drop-jmeter   
-# #--------------------------------------------#    
-#     - job: Postman
-#       displayName:  API-integration tests
-#       pool: myAgent
-#       steps:
-#         # Postman - Install Newman    
-#         - task: CmdLine@2
-#           displayName: 'Install npm'
-#           inputs:
-#             script: 'curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs'
-#             workingDir: '$(System.DefaultWorkingDirectory)'
-#         - task: CmdLine@2
-#           displayName: Install Newman
-#           inputs:
-#             script: 'sudo npm install -g newman'
-#             workingDirectory: $(System.DefaultWorkingDirectory)
-#         - task: CmdLine@2
-#           displayName: Verify Working Directory
-#           inputs:
-#             script: 'pwd'
-#             workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-#         # Postman - Run Regression Test Suite
-#         - task: CmdLine@2
-#           displayName: Run Regression Tests
-#           continueOnError: true
-#           inputs:
-#             script: 'newman run TestSuite.Regression.json -e RegressionEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
-#             workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+    - job: JMeter
+      displayName: Performance testing
+      pool: myAgent
+      steps:
+        - bash: |
+            sudo apt-get install openjdk-17-jre-headless -y
+            java -version
+            wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.tgz
+            tar xzvf apache-jmeter-5.6.tgz
+            echo "jmeter version : " 
+            apache-jmeter-5.6/bin/jmeter --version   
+            mkdir -p log/jmeter
+            pwd
+          displayName: Install JMeter
+        - bash: |
+            apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/StressTest.jmx -l log/jmeter/stress-test-result.csv -e -f -o log/jmeter/stress-test-html-report -j log/jmeter/jmeter-stress-test.log
+            cat log/jmeter/jmeter-stress-test.log
+          displayName: Run Stress Test
+        - bash: |
+            apache-jmeter-5.6/bin/jmeter -n -t automatedtesting/jmeter/EnduranceTest.jmx -l log/jmeter/endurance-test-result.csv -e -f -o log/jmeter/endurance-test-html-report -j log/jmeter/jmeter-endurance-test.log
+            cat log/jmeter/jmeter-endurance-test.log
+          displayName: Endurance test
+        - task: ArchiveFiles@2
+          displayName: Publish Stress Test Results
+          inputs:
+            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report'
+            includeRootFolder: false
+            archiveType: zip
+            archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/stress-test-html-report.zip'
+            verbose: true
+        - task: ArchiveFiles@2
+          displayName: Publish Endurance Test Results
+          inputs:
+            rootFolderOrFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report'
+            includeRootFolder: false
+            archiveType: zip
+            archiveFile: '$(System.DefaultWorkingDirectory)/log/jmeter/endurance-test-html-report.zip'
+            verbose: true
+        - task: PublishPipelineArtifact@1
+          displayName: Publish JMeter logs
+          inputs:
+            targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
+            artifact: drop-jmeter   
+#--------------------------------------------#    
+    - job: Postman
+      displayName:  API-integration tests
+      pool: myAgent
+      steps:
+        # Postman - Install Newman    
+        - task: CmdLine@2
+          displayName: 'Install npm'
+          inputs:
+            script: 'curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && sudo apt-get install -y nodejs'
+            workingDir: '$(System.DefaultWorkingDirectory)'
+        - task: CmdLine@2
+          displayName: Install Newman
+          inputs:
+            script: 'sudo npm install -g newman'
+            workingDirectory: $(System.DefaultWorkingDirectory)
+        - task: CmdLine@2
+          displayName: Verify Working Directory
+          inputs:
+            script: 'pwd'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        # Postman - Run Regression Test Suite
+        - task: CmdLine@2
+          displayName: Run Regression Tests
+          continueOnError: true
+          inputs:
+            script: 'newman run TestSuite.Regression.json -e RegressionEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-Regression.xml'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
 
-#         # Postman - Run Data Validation Test Suite    
-#         - task: CmdLine@2
-#           displayName: Run Data Validation Tests
-#           continueOnError: true
-#           inputs:
-#             script: 'newman run TestSuite.Data-Validation.json -e DataValidationEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-DataValidation.xml'
-#             workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-#         # Postman - Publish Results 
-#         - task: PublishTestResults@2
-#           inputs:
-#             testResultsFormat: 'JUnit'
-#             testResultsFiles: '**/TEST-*.xml' # '**/TEST-*.xml'
-#             searchFolder: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
-#             mergeTestResults: true
-#             testRunTitle: 'Regression-DataValidation-Test'
+        # Postman - Run Data Validation Test Suite    
+        - task: CmdLine@2
+          displayName: Run Data Validation Tests
+          continueOnError: true
+          inputs:
+            script: 'newman run TestSuite.Data-Validation.json -e DataValidationEnv.postman_environment.json --reporters cli,junit --reporter-junit-export TEST-DataValidation.xml'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+        # Postman - Publish Results 
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/TEST-*.xml' 
+            searchFolder: '$(System.DefaultWorkingDirectory)/automatedtesting/postman'
+            mergeTestResults: false
+            testRunTitle: 'Regression-DataValidation-Test'
 
-  # #--------------------------------------------#  
+  #--------------------------------------------#  
   # Selenium | Functional UI Tests
       - deployment: test
         displayName: Functional UI testing
