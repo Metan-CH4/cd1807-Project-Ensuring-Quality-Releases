@@ -52,7 +52,7 @@ def add_items_to_cart(driver):
 
     print('Items added to the cart:')
     for item in items_added:
-        print(item)
+        print(timestamp() + 'add item: ' + item)
 
     return items_added
 
@@ -80,7 +80,7 @@ def remove_items_from_cart(driver):
         
     print('Items removed from the cart:')
     for item in items_removed:
-        print(item)
+        print(timestamp() + 'remove item: ' + item)
         
     return items_removed
 
